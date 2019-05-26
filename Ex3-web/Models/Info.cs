@@ -9,6 +9,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
+using static System.Net.Mime.MediaTypeNames;
+using System.Reflection;
 
 namespace Ex3_web.Models
 {
@@ -20,12 +23,16 @@ namespace Ex3_web.Models
         TcpListener server;
         TcpClient clientSocket;
         Thread thread;
+        List<String> DataFromSimolator;
+        Boolean FileIsopen;
 
         public Info()
         {
             shouldStop = false;
             lon = 0.0f;
             lat = 0.0f;
+            DataFromSimolator = new List<string>();
+            FileIsopen = false;
 
         }
 
@@ -51,6 +58,12 @@ namespace Ex3_web.Models
             }
         }
 
+        public List<string> DataFromClient
+        {
+            get { return DataFromSimolator; }
+
+        }
+
         private static string readLine(BinaryReader reader)
         {
             // storage the line
@@ -69,9 +82,9 @@ namespace Ex3_web.Models
 
             return new string(buffer);
         }
-        public void openServer(string ip,int port)
+        public void openServer(string ip, int port)
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(ip),port);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(ip), port);
             this.server = new TcpListener(ep);
             // open the server
             server.Start();
@@ -88,7 +101,6 @@ namespace Ex3_web.Models
             BinaryReader reader = new BinaryReader(stream);
             DateTime start = DateTime.UtcNow;
             string inputLine;
-            string[] splitStr;
 
             while (!shouldStop)
             {
@@ -97,10 +109,9 @@ namespace Ex3_web.Models
                 {
                     continue;
                 }
-                // take from the flight only the lon and the lat
-                splitStr = inputLine.Split(',');
-                //FlightBoardViewModel.Instance.Lon = float.Parse(splitStr[0]);
-                //FlightBoardViewModel.Instance.Lat = float.Parse(splitStr[1]);
+
+                DataFromSimolator.Add(inputLine);
+                Thread.Sleep(250);
             }
 
 
@@ -124,11 +135,42 @@ namespace Ex3_web.Models
             DateTime start = DateTime.UtcNow;
             string inputLine;
             string[] splitStr;
-            inputLine = readLine(reader); 
+            inputLine = readLine(reader);
             splitStr = inputLine.Split(',');
             Lon = float.Parse(splitStr[0]);
             Lat = float.Parse(splitStr[1]);
 
         }
-    }
+
+        public void WriteToFile(string line)
+
+        {
+
+           
+
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"\Names.txt");
+            path = Environment.CurrentDirectory;
+            path = path + "\\tex.txt";
+            using (FileStream fs = File.Create(path))
+            {
+                Byte[] info = new UTF8Encoding(true).GetBytes("This is some text in the file.");
+                // Add some information to the file.
+                fs.Write(info, 0, info.Length);
+            }
+
+            // Open the stream and read it back.
+            using (StreamReader sr = File.OpenText(path))
+            {
+                string s = "";
+                while ((s = sr.ReadLine()) != null)
+                {
+                    Console.WriteLine(s);
+                }
+            }
+        }
+
+    }    
 }
+
+
+        
