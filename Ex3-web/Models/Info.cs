@@ -145,9 +145,6 @@ namespace Ex3_web.Models
         public void WriteToFile(string line)
 
         {
-
-           
-
             string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"\Names.txt");
             path = Environment.CurrentDirectory;
             path = path + "\\tex.txt";

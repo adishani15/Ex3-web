@@ -19,18 +19,24 @@ namespace Ex3_web.Controllers
         [HttpGet]
         public ActionResult Display(string ip, int port)
         {
-            //SingeltonInfo.Instance.openServer(ip, port);
+            SingeltonInfo.Instance.openServer(ip, port);
 
-            //ViewBag.lon = SingeltonInfo.Instance.Lon +180;
-            //ViewBag.lat = SingeltonInfo.Instance.Lat +90;
+            ViewBag.lon = SingeltonInfo.Instance.Lon +180;
+            ViewBag.lat = SingeltonInfo.Instance.Lat +90;
             String a = "s";
 
 
-            SingeltonInfo.Instance.WriteToFile(a);
+            //SingeltonInfo.Instance.WriteToFile(a);
 
             return View();
         }
 
+        public ActionResult Display3Param(string ip, int port, int time)
+        {
+            
+
+            return View();
+        }
 
 
     }

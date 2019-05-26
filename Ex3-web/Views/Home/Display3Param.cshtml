@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewBag.Title = "Display3Param";
+}
+<html>
+<head>
+
+</head>
+<body>
+    <script>
+    var IntervalTime = @Session["time"] * 1000
+    myTimer = (function () {
+        $.post( "@Url.Action("Display")")
+    });
+
+    setInterval(myTimer, IntervalTime);
+    myTimer();
+    </script>
+</body>
+</html>
+
