@@ -32,5 +32,13 @@ namespace Ex3_web.Controllers
             return View();
         }
 
+
+        [HttpGet]
+        public ActionResult Display3Param(string ip, int port, int time)
+        {
+         
+            return View();
+        }
+
     }
 }
