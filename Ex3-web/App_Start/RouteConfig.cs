@@ -17,7 +17,10 @@ namespace Ex3_web
                 name: "Display",
                 url: "{action}/{ip}/{port}",
                 // delete ip and port
-                defaults: new { controller = "Home", action = "Display", ip = "127.0.0.1", port = 5400 }
+                defaults: new { controller = "Home", action = "Display",
+                    ip = UrlParameter.Optional,
+                    port = UrlParameter.Optional
+                }
             );
             routes.MapRoute(
                 name: "save",

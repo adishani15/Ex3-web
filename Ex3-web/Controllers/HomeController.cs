@@ -21,7 +21,6 @@ namespace Ex3_web.Controllers
         {
             SingeltonInfo.Instance.openServer(ip, port);
             SingeltonInfo.Instance.ReadOnlyOnce();
-
             ViewBag.lon = SingeltonInfo.Instance.Lon +180;
             ViewBag.lat = SingeltonInfo.Instance.Lat +90;
             return View();
