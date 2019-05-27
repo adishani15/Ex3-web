@@ -123,11 +123,11 @@ namespace Ex3_web.Models
             this.server.Stop();
         }
 
-        public float getInfo(string name)
-        {
-            string command = this.SimulatorPath[name];
+        //public float getInfo(string name)
+        //{
+        //    string command = this.SimulatorPath[name];
 
-        }
+        //}
 
 
     }
