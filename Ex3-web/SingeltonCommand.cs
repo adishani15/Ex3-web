@@ -6,16 +6,16 @@ using Ex3_web.Models;
 
 namespace Ex3_web
 {
-    public class SingeltonInfo
+    public class SingeltonCommand
     {
-        private static Info m_Instance = null;
-        public static Info Instance
+        private static Command m_Instance = null;
+        public static Command Instance
         {
             get
             {
                 if (m_Instance == null)
                 {
-                    m_Instance = new Info();
+                    m_Instance = new Command();
                 }
                 return m_Instance;
             }

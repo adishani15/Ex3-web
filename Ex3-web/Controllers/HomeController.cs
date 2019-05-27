@@ -19,10 +19,13 @@ namespace Ex3_web.Controllers
         [HttpGet]
         public ActionResult Display(string ip, int port)
         {
-            SingeltonInfo.Instance.openServer(ip, port);
-            SingeltonInfo.Instance.ReadOnlyOnce();
+            SingeltonCommand.Instance.connectServer(ip, port);
+
+            /*SingeltonInfo.Instance.ReadOnlyOnce();
             ViewBag.lon = SingeltonInfo.Instance.Lon +180;
-            ViewBag.lat = SingeltonInfo.Instance.Lat +90;
+            ViewBag.lat = SingeltonInfo.Instance.Lat +90;*/
+            ViewBag.lon = 90;
+            ViewBag.lat = 180;
             return View();
         }
 
