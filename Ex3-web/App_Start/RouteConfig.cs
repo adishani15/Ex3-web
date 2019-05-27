@@ -14,16 +14,6 @@ namespace Ex3_web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                name: "Display3Param",
-                url: "Display/{ip}/{port}/{time}",
-                // delete ip and port
-                defaults: new
-                {
-                    controller = "Home",
-                    action = "Display3Param"
-                });
-
-            routes.MapRoute(
                 name: "Display",
                 url: "{action}/{ip}/{port}",
                 // delete ip and port
@@ -35,6 +25,17 @@ namespace Ex3_web
                     port = UrlParameter.Optional
                 }
             );
+
+            routes.MapRoute(
+                name: "Display3Param",
+                url: "Display/{ip}/{port}/{time}",
+                // delete ip and port
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Display3Param"
+                });
+
             routes.MapRoute(
                 name: "save",
                 url: "{action}/{ip}/{port}/{second}/{time}/{name}",

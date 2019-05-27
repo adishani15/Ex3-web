@@ -40,5 +40,12 @@ namespace Ex3_web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult Read(string ip, int port, int time)
+        {
+           
+            return View();
+        }
+
     }
 }

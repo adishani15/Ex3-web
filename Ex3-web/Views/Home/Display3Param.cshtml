@@ -11,9 +11,10 @@
     </head>
 <body>
     <script>
-    var IntervalTime = @Session["time"] * 1000
+     @*var IntervalTime = @Session["time"] * 1000*@
+    var IntervalTime = 2 * 1000
     myTimer = (function () {
-        $.post( "@Url.Action("Index")").done(function (xml) {
+        $.post( "@Url.Action("Index")").done(function () {
             alert("hiii");
 
         });
