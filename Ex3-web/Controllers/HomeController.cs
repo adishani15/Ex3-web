@@ -20,24 +20,18 @@ namespace Ex3_web.Controllers
         public ActionResult Display(string ip, int port)
         {
             SingeltonInfo.Instance.openServer(ip, port);
+            SingeltonInfo.Instance.ReadOnlyOnce();
 
             ViewBag.lon = SingeltonInfo.Instance.Lon +180;
             ViewBag.lat = SingeltonInfo.Instance.Lat +90;
-            String a = "s";
-
-
-            //SingeltonInfo.Instance.WriteToFile(a);
-
             return View();
         }
 
-        public ActionResult Display3Param(string ip, int port, int time)
+        public ActionResult Save(string ip, int port,int second,int lenth,int name)
         {
-            
 
             return View();
         }
-
 
     }
 }

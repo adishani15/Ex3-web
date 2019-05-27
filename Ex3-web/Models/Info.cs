@@ -91,11 +91,11 @@ namespace Ex3_web.Models
             // wait for connect
             this.clientSocket = server.AcceptTcpClient();
             // after connection- start listen to the flight.
-            this.thread = new Thread(() => listenFlight(server, clientSocket));
-            thread.Start();
+            //this.thread = new Thread(() => listenFlight(server, clientSocket));
+           // thread.Start();
         }
 
-        private void listenFlight(TcpListener server, TcpClient clientSocket)
+       /* private void listenFlight(TcpListener server, TcpClient clientSocket)
         {
             NetworkStream stream = clientSocket.GetStream();
             BinaryReader reader = new BinaryReader(stream);
@@ -115,7 +115,9 @@ namespace Ex3_web.Models
             }
 
 
-        }
+        }*/
+
+       
         /**
          * close the socket.
          * */
@@ -128,9 +130,9 @@ namespace Ex3_web.Models
 
         }
 
-        void ReadOnlyOnce()
+        public void ReadOnlyOnce()
         {
-            NetworkStream stream = clientSocket.GetStream();
+            NetworkStream stream = this.clientSocket.GetStream();
             BinaryReader reader = new BinaryReader(stream);
             DateTime start = DateTime.UtcNow;
             string inputLine;
