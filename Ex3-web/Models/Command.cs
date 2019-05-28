@@ -159,7 +159,7 @@ namespace Ex3_web.Models
             string path = AppDomain.CurrentDomain.BaseDirectory + @"\" + name;
             using (StreamWriter KeepWrite = File.AppendText(path))
             {
-                KeepWrite.Write(data);
+                KeepWrite.WriteLine(data);
                
             }
 
