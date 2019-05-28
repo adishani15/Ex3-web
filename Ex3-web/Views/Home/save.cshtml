@@ -11,28 +11,40 @@
 <body background="~/export-map-share.png" class="center fit map" style="background-size:100% 100%">
     <canvas id="canvas"></canvas>
     <script>
-    var myvar
-    var IntervalTime = @Session["second"] * 1000
+    var myPoints = [] 
 
-    myTimer = (function () {
+        var IntervalTime = @Session["second"] * 1000
 
-    $.post("@Url.Action("GetAllParm")").done(function (xml) {
+        myTimer = (function () {
+           $.post('@Url.Action("GetAllParm")').done(function (xml) {
+                var xmlDoc = $.parseXML(xml),
+                $xml = $(xmlDoc),
+                lon = parseFloat($xml.find("lon").text());
+                lat = parseFloat($xml.find("lat").text());
 
-
-    var xmlDoc = $.parseXML(xml),
-    $xml = $( xmlDoc ),
-    Lon = $xml.find( "lon" ).text();
-    Lat = $xml.find( "lat" ).text();
-    $("#prodId").text(Lon);
-    $("#prodName").text(Lat);
-    //$("#prodId").text();
-    //$("#prodName").text(Lat);
-
-
-
-
-    });
-    });
+                var canvas = document.getElementById("canvas");
+                var con = canvas.getContext("2d");
+                con.canvas.width = window.innerWidth;
+                con.canvas.height = window.innerHeight;
+                con.beginPath();
+                var lonPoint = (lon + 180) * ($(window).width() / 360);
+               var latPoint = (lat + 90) * ($(window).height() / 180);
+               con.arc(lonPoint, latPoint, 3, 0, 2 * Math.PI);
+               con.lineWidth = 1;
+               con.lineStyle = 'blue';
+               con.fillStyle = 'red';
+               con.fill();
+               con.stroke();
+               var point = { x: lonPoint, y: latPoint }
+               myPoints.push(point)
+               con.moveTo(myPoints[0].x, myPoints[0].y);
+               for (var i = 0; i < myPoints.length; i++){
+                   con.lineTo(myPoints[i].x, myPoints[i].y);
+               }
+               con.strokeStyle = 'red';
+               con.stroke();
+             });
+        });
 
     var a=setInterval(myTimer, IntervalTime);
     myVar = setTimeout(function () { clearInterval(a) },  @Session["time"] * 1000);

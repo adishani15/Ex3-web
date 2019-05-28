@@ -90,9 +90,10 @@ namespace Ex3_web.Controllers
             writer.WriteStartDocument();
             writer.WriteStartElement("list");
 
+            Random r = new Random();
 
-            writer.WriteElementString("lon", list[0].ToString());
-            writer.WriteElementString("lat", list[1].ToString());
+            writer.WriteElementString("lon", (list[0]+r.Next(50)).ToString());
+            writer.WriteElementString("lat", (list[1]+r.Next(50)).ToString());
             writer.WriteEndElement();
 
             writer.WriteEndDocument();
