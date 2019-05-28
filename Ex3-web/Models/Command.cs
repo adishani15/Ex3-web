@@ -20,6 +20,8 @@ namespace Ex3_web.Models
         TcpClient client;
         TcpListener server;
         private bool didConnect;
+        StreamWriter createText;
+        string name;
 
         /*the constractor will set the map of all the path we need to know to connect with the flight simolator*/
         public Command()
@@ -124,19 +126,43 @@ namespace Ex3_web.Models
 
         }
 
-        public void WriteToFile(int second, int time, string name)
+        public void OpenFile(string name1)
         {
-            name = name + ".txt";
-            StreamWriter createText = File.CreateText(AppDomain.CurrentDomain.BaseDirectory + @"\" + name);
-           
-
-
-
-            StreamWriter KeepWrite = File.AppendText(AppDomain.CurrentDomain.BaseDirectory + @"\" + name)
-            
-
+            this.name = name1 + ".txt";
+            this.createText = File.CreateText(AppDomain.CurrentDomain.BaseDirectory + @"\" + this.name);
+            //StreamWriter KeepWrite = File.AppendText(AppDomain.CurrentDomain.BaseDirectory + @"\" + name);
+            this.createText.Close();
         }
 
+        public List<float> OnTimedEvent()
+        {
+            List<float> ret = new List<float>();
+            //Lon, lat, throttle, rudder.
+            float lon = getInfo("lon");
+            ret.Add(lon);
+            float lat = getInfo("lat");
+            ret.Add(lat);
+            float throttle = getInfo("throttle");
+            ret.Add(throttle);
+            float rudder = getInfo("rudder");
+            ret.Add(rudder);
+            string forWrite = lon.ToString() + " " + lat.ToString() + " " + throttle.ToString() + " " + rudder.ToString();
+
+            this.WriteFile(this.name, forWrite);
+            return ret;
+        }
+
+        public void WriteFile(string name1,string data)
+        {
+            name1 = name1 + "txt";
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"\" + name1;
+            using (StreamWriter KeepWrite = File.AppendText(path))
+            {
+                KeepWrite.Write(data);
+               
+            }
+
+        }
 
 
 
