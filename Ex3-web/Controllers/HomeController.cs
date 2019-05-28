@@ -34,9 +34,8 @@ namespace Ex3_web.Controllers
         {
             SingeltonCommand.Instance.connectServer(ip, port);
             SingeltonCommand.Instance.OpenFile(name);
-            Session["time"] = second;
-
-
+            Session["time"] = time;
+            Session["second"] = second;
             return View();
         }
 

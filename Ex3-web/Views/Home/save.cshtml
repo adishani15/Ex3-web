@@ -1,17 +1,59 @@
-﻿
-@{
-    Layout = null;
+﻿@{
+    ViewBag.Title = "save";
 }
+<h2>display</h2>
+<div>
+    <h2>Employee json Get</h2>
+    <table>
+        <tr>
+            <td>lon:  </td>
+            <td><p type="text" id="prodId" size="5"></p></td>
+        </tr>
+        <tr>
+            <td>lat:  </td>
+            <td><p type="text" id="prodName" size="5"></p></td>
+        </tr>
+        @*<tr>
+                <td>thro:  </td>
+                <td><p type="text" id="prodthro" size="5"></p></td>
+            </tr>
+            <tr>
+                <td>rudder:  </td>
+                <td><p type="text" id="prodrud" size="5"></p></td>
+            </tr>*@
+    </table>
 
-<!DOCTYPE html>
+</div>
+<script>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>save</title>
-</head>
-<body>
-    <div> 
-    </div>
-</body>
-</html>
+
+    var myvar
+    var IntervalTime = @Session["second"] * 1000
+
+    myTimer = (function () {
+
+        $.post("@Url.Action("GetAllParm")").done(function (xml) {
+
+
+            var xmlDoc = $.parseXML(xml),
+            $xml = $( xmlDoc ),
+            Lon = $xml.find( "lon" ).text();
+            Lat = $xml.find( "lat" ).text();
+            $("#prodId").text(Lon);
+            $("#prodName").text(Lat);
+                //$("#prodId").text();
+                //$("#prodName").text(Lat);
+
+
+
+
+        });
+    });
+
+    var a=setInterval(myTimer, IntervalTime);
+    myVar = setTimeout(function () { clearInterval(a) },  @Session["time"] * 1000);
+    myTimer();
+
+
+
+</script>
