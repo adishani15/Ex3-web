@@ -13,6 +13,9 @@
 <body background="~/export-map-share.png" class="center fit map" style="background-size:100% 100%">
     <canvas id="canvas"></canvas>
     <script>
+
+        var myPoints = [] 
+
         var IntervalTime = @Session["time"] * 1000
 
         myTimer = (function () {
@@ -27,14 +30,22 @@
                 con.canvas.width = window.innerWidth;
                 con.canvas.height = window.innerHeight;
                 con.beginPath();
-                var lonToDraw = (lon + 180) * ($(window).width() / 360);
-                var latToDraw = (lat + 90) * ($(window).height() / 180);
-                con.arc(lonToDraw, latToDraw, 3, 0, 2 * Math.PI);
-                con.lineWidth = 1;
-                con.lineStyle = 'blue';
-                con.fillStyle = 'red';
-                con.fill();
-                con.stroke();
+                var lonPoint = (lon + 180) * ($(window).width() / 360);
+               var latPoint = (lat + 90) * ($(window).height() / 180);
+               con.arc(lonPoint, latPoint, 3, 0, 2 * Math.PI);
+               con.lineWidth = 1;
+               con.lineStyle = 'blue';
+               con.fillStyle = 'red';
+               con.fill();
+               con.stroke();
+               var point = { x: lonPoint, y: latPoint }
+               myPoints.push(point)
+               con.moveTo(myPoints[0].x, myPoints[0].y);
+               for (var i = 0; i < myPoints.length; i++){
+                   con.lineTo(myPoints[i].x, myPoints[i].y);
+               }
+               con.strokeStyle = 'red';
+               con.stroke();
              });
         });
 
