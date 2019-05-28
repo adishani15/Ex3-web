@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml;
 using Ex3_web.Models;
 
 
@@ -21,16 +23,19 @@ namespace Ex3_web.Controllers
         {
             SingeltonCommand.Instance.connectServer(ip, port);
 
-            /*SingeltonInfo.Instance.ReadOnlyOnce();
-            ViewBag.lon = SingeltonInfo.Instance.Lon +180;
-            ViewBag.lat = SingeltonInfo.Instance.Lat +90;*/
-            ViewBag.lon = 90;
-            ViewBag.lat = 180;
+
+            ViewBag.lon = SingeltonCommand.Instance.getInfo("lon")+180;
+            ViewBag.lat = SingeltonCommand.Instance.getInfo("lat")+180;
+            SingeltonCommand.Instance.close();
             return View();
         }
 
-        public ActionResult Save(string ip, int port,int second,int lenth,int name)
+        public ActionResult Save(string ip, int port,int second,int time,string name)
         {
+            SingeltonCommand.Instance.connectServer(ip, port);
+            SingeltonCommand.Instance.OpenFile(name);
+            Session["time"] = second;
+
 
             return View();
         }
@@ -49,6 +54,37 @@ namespace Ex3_web.Controllers
            
             return View();
         }
+
+        [HttpPost]
+
+        public string GetAllParm()
+        {
+            List<float> list = SingeltonCommand.Instance.OnTimedEvent();
+            return ToXml(list);
+            
+        }
+
+        private string ToXml(List<float> list)
+        {
+            //Initiate XML stuff
+            StringBuilder sb = new StringBuilder();
+            XmlWriterSettings settings = new XmlWriterSettings();
+            XmlWriter writer = XmlWriter.Create(sb, settings);
+
+            writer.WriteStartDocument();
+            writer.WriteStartElement("list");
+
+
+            writer.WriteElementString("lon", list[0].ToString());
+            writer.WriteElementString("lat", list[1].ToString());
+            writer.WriteEndElement();
+
+            writer.WriteEndDocument();
+            writer.Flush();
+            return sb.ToString();
+
+        }
+
 
     }
 }

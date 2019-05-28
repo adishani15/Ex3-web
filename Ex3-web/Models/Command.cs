@@ -20,6 +20,8 @@ namespace Ex3_web.Models
         TcpClient client;
         TcpListener server;
         private bool didConnect;
+        StreamWriter createText;
+        string name;
 
         /*the constractor will set the map of all the path we need to know to connect with the flight simolator*/
         public Command()
@@ -44,30 +46,15 @@ namespace Ex3_web.Models
 
         private void SetTheMap()
         {
-            this.SimulatorPath.Add("lon","get /position/longitude-deg");
-            this.SimulatorPath.Add("lat","get /position/latitude-deg");
-            this.SimulatorPath.Add("alt","get /instrumentation/altimeter/indicated-altitude-ft");
-            this.SimulatorPath.Add("direction","get /instrumentation/heading-indicator/indicated-heading-deg");
-            this.SimulatorPath.Add("speed","get /instrumentation/airspeed-indicator/indicated-speed-kt");
-        }
-
-
-        /*this function is working from the view modle and gets her param ftom there and do a work on the 
-         * data and pass it to the simolator*/
-        public void setInfo(List<string> path)
-        {
-            string goTo = "set ";
-            goTo += this.SimulatorPath[path[0]];
-            goTo += " ";
-            goTo += path[1];
-            goTo += "\r\n";
-            Console.WriteLine(goTo);
-            byte[] byteTime = System.Text.Encoding.ASCII.GetBytes(goTo.ToString());
-            this.ns.Write(byteTime, 0, byteTime.Length);
+            this.SimulatorPath.Add("lon","get /position/longitude-deg\r\n");
+            this.SimulatorPath.Add("lat", "get /position/latitude-deg\r\n");
+            this.SimulatorPath.Add("rudder", "get /controls/flight/rudder\r\n");
+            this.SimulatorPath.Add("throttle", "get /controls/engines/current-engine/throttle\r\n");
 
         }
 
-        /*this function works from the auto view model this is an anather function because we need todo it on anather thread*/
+
+        
         public void setFromAuto(List<List<string>> s)
         {
             //the thread
@@ -126,8 +113,57 @@ namespace Ex3_web.Models
         public float getInfo(string name)
         {
             string command = this.SimulatorPath[name];
+            byte[] byteTime = System.Text.Encoding.ASCII.GetBytes(command);
+            
+            this.ns.Write(byteTime, 0, byteTime.Length);
+            byte[] data = new byte[this.client.ReceiveBufferSize];
+            int byteRead = this.ns.Read(data, 0, Convert.ToInt32(this.client.ReceiveBufferSize));
+            string request = Encoding.ASCII.GetString(data, 0, byteRead);
+            request = request.Split('=')[1].Split(' ')[1].Split('\'')[1];
+            float ans = float.Parse(request);
+            return ans;
+
 
         }
+
+        public void OpenFile(string name1)
+        {
+            this.name = name1 + ".txt";
+            this.createText = File.CreateText(AppDomain.CurrentDomain.BaseDirectory + @"\" + this.name);
+            //StreamWriter KeepWrite = File.AppendText(AppDomain.CurrentDomain.BaseDirectory + @"\" + name);
+            this.createText.Close();
+        }
+
+        public List<float> OnTimedEvent()
+        {
+            List<float> ret = new List<float>();
+            //Lon, lat, throttle, rudder.
+            float lon = getInfo("lon");
+            ret.Add(lon);
+            float lat = getInfo("lat");
+            ret.Add(lat);
+            float throttle = getInfo("throttle");
+            ret.Add(throttle);
+            float rudder = getInfo("rudder");
+            ret.Add(rudder);
+            string forWrite = lon.ToString() + " " + lat.ToString() + " " + throttle.ToString() + " " + rudder.ToString();
+
+            this.WriteFile(this.name, forWrite);
+            return ret;
+        }
+
+        public void WriteFile(string name1,string data)
+        {
+            name1 = name1 + "txt";
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"\" + name1;
+            using (StreamWriter KeepWrite = File.AppendText(path))
+            {
+                KeepWrite.Write(data);
+               
+            }
+
+        }
+
 
 
     }
