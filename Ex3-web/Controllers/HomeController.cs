@@ -24,13 +24,13 @@ namespace Ex3_web.Controllers
             SingeltonCommand.Instance.connectServer(ip, port);
 
 
-            ViewBag.lon = SingeltonCommand.Instance.getInfo("lon")+180;
-            ViewBag.lat = SingeltonCommand.Instance.getInfo("lat")+180;
+            ViewBag.lon = SingeltonCommand.Instance.getInfo("lon") + 180;
+            ViewBag.lat = SingeltonCommand.Instance.getInfo("lat") + 180;
             SingeltonCommand.Instance.close();
             return View();
         }
 
-        public ActionResult Save(string ip, int port,int second,int time,string name)
+        public ActionResult Save(string ip, int port, int second, int time, string name)
         {
             SingeltonCommand.Instance.connectServer(ip, port);
             SingeltonCommand.Instance.OpenFile(name);
@@ -43,18 +43,34 @@ namespace Ex3_web.Controllers
         [HttpGet]
         public ActionResult Display3Param(string ip, int port, int time)
         {
-         
+            Session["time"] = time;
+            SingeltonCommand.Instance.connectServer(ip, port);
             return View();
         }
 
+
         [HttpPost]
-        public ActionResult Read(string ip, int port, int time)
+        public string Read()
         {
-           
-            return View();
+            Random r = new Random();
+            var lon = SingeltonCommand.Instance.getInfo("lon") + r.Next(50);
+            var lat = SingeltonCommand.Instance.getInfo("lat") + r.Next(50);
+
+            StringBuilder sb = new StringBuilder();
+            XmlWriterSettings settings = new XmlWriterSettings();
+            XmlWriter writer = XmlWriter.Create(sb, settings);
+
+            writer.WriteStartDocument();
+            writer.WriteStartElement("Location");
+            writer.WriteElementString("Lon", lon.ToString());
+            writer.WriteElementString("Lat", lat.ToString());
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+            writer.Flush();
+            return sb.ToString();
         }
 
-        [HttpPost]
+    [HttpPost]
 
         public string GetAllParm()
         {
