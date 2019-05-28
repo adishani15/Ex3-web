@@ -108,6 +108,7 @@ namespace Ex3_web.Models
         {
             this.client.Close();
             this.server.Stop();
+            this.ns.Close();
         }
 
         public float getInfo(string name)
@@ -152,10 +153,10 @@ namespace Ex3_web.Models
             return ret;
         }
 
-        public void WriteFile(string name1,string data)
+        public void WriteFile(string name,string data)
         {
-            name1 = name1 + "txt";
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"\" + name1;
+           
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"\" + name;
             using (StreamWriter KeepWrite = File.AppendText(path))
             {
                 KeepWrite.Write(data);

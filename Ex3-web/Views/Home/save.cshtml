@@ -1,17 +1,45 @@
-﻿
-@{
-    Layout = null;
+﻿@{
+    ViewBag.Title = "save";
 }
-
-<!DOCTYPE html>
-
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>save</title>
+    <meta charset="utf-8" />
+    <title>Display</title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
 </head>
-<body>
-    <div> 
-    </div>
+<body background="~/export-map-share.png" class="center fit map" style="background-size:100% 100%">
+    <canvas id="canvas"></canvas>
+    <script>
+    var myvar
+    var IntervalTime = @Session["second"] * 1000
+
+    myTimer = (function () {
+
+    $.post("@Url.Action("GetAllParm")").done(function (xml) {
+
+
+    var xmlDoc = $.parseXML(xml),
+    $xml = $( xmlDoc ),
+    Lon = $xml.find( "lon" ).text();
+    Lat = $xml.find( "lat" ).text();
+    $("#prodId").text(Lon);
+    $("#prodName").text(Lat);
+    //$("#prodId").text();
+    //$("#prodName").text(Lat);
+
+
+
+
+    });
+    });
+
+    var a=setInterval(myTimer, IntervalTime);
+    myVar = setTimeout(function () { clearInterval(a) },  @Session["time"] * 1000);
+    myTimer();
+
+
+
+    </script>
 </body>
 </html>
