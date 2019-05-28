@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Display3Param";
 }
 
@@ -8,21 +7,39 @@
 <head>
     <meta charset="utf-8" />
     <title>Display</title>
-    </head>
-<body>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+</head>
+<body background="~/export-map-share.png" class="center fit map" style="background-size:100% 100%">
+    <canvas id="canvas"></canvas>
     <script>
-     @*var IntervalTime = @Session["time"] * 1000*@
-    var IntervalTime = 2 * 1000
-    myTimer = (function () {
-        $.post( "@Url.Action("Index")").done(function () {
-            alert("hiii");
+        var IntervalTime = @Session["time"] * 1000
 
+        myTimer = (function () {
+           $.post('@Url.Action("Read")').done(function (xml) {
+                var xmlDoc = $.parseXML(xml),
+                $xml = $(xmlDoc),
+                lon = parseFloat($xml.find("Lon").text());
+                lat = parseFloat($xml.find("Lat").text());
+
+                var canvas = document.getElementById("canvas");
+                var con = canvas.getContext("2d");
+                con.canvas.width = window.innerWidth;
+                con.canvas.height = window.innerHeight;
+                con.beginPath();
+                var lonToDraw = (lon + 180) * ($(window).width() / 360);
+                var latToDraw = (lat + 90) * ($(window).height() / 180);
+                con.arc(lonToDraw, latToDraw, 3, 0, 2 * Math.PI);
+                con.lineWidth = 1;
+                con.lineStyle = 'blue';
+                con.fillStyle = 'red';
+                con.fill();
+                con.stroke();
+             });
         });
-    });
 
     setInterval(myTimer, IntervalTime);
     myTimer();
     </script>
 </body>
 </html>
-

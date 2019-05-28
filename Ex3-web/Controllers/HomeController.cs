@@ -12,6 +12,7 @@ namespace Ex3_web.Controllers
 {
     public class HomeController : Controller
     {
+        List<List<float>> myPoints= new List<List<float>>();
         // GET: Home
         public ActionResult Index()
         {
@@ -52,6 +53,7 @@ namespace Ex3_web.Controllers
         [HttpPost]
         public string Read()
         {
+            List<float> point = new List<float>();
             Random r = new Random();
             var lon = SingeltonCommand.Instance.getInfo("lon") + r.Next(50);
             var lat = SingeltonCommand.Instance.getInfo("lat") + r.Next(50);
