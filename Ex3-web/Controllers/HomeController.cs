@@ -21,17 +21,16 @@ namespace Ex3_web.Controllers
         {
             SingeltonCommand.Instance.connectServer(ip, port);
 
-
-            ViewBag.lon = SingeltonCommand.Instance.getInfo("lon")+180;
-            ViewBag.lat = SingeltonCommand.Instance.getInfo("lat")+180;
-            SingeltonCommand.Instance.close();
+            /*SingeltonInfo.Instance.ReadOnlyOnce();
+            ViewBag.lon = SingeltonInfo.Instance.Lon +180;
+            ViewBag.lat = SingeltonInfo.Instance.Lat +90;*/
+            ViewBag.lon = 90;
+            ViewBag.lat = 180;
             return View();
         }
 
-        public ActionResult Save(string ip, int port,int second,int time,string name)
+        public ActionResult Save(string ip, int port,int second,int lenth,int name)
         {
-            SingeltonCommand.Instance.connectServer(ip, port);
-
 
             return View();
         }
