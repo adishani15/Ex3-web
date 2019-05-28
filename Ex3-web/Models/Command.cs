@@ -44,30 +44,15 @@ namespace Ex3_web.Models
 
         private void SetTheMap()
         {
-            this.SimulatorPath.Add("lon","get /position/longitude-deg");
-            this.SimulatorPath.Add("lat","get /position/latitude-deg");
-            this.SimulatorPath.Add("alt","get /instrumentation/altimeter/indicated-altitude-ft");
-            this.SimulatorPath.Add("direction","get /instrumentation/heading-indicator/indicated-heading-deg");
-            this.SimulatorPath.Add("speed","get /instrumentation/airspeed-indicator/indicated-speed-kt");
-        }
-
-
-        /*this function is working from the view modle and gets her param ftom there and do a work on the 
-         * data and pass it to the simolator*/
-        public void setInfo(List<string> path)
-        {
-            string goTo = "set ";
-            goTo += this.SimulatorPath[path[0]];
-            goTo += " ";
-            goTo += path[1];
-            goTo += "\r\n";
-            Console.WriteLine(goTo);
-            byte[] byteTime = System.Text.Encoding.ASCII.GetBytes(goTo.ToString());
-            this.ns.Write(byteTime, 0, byteTime.Length);
+            this.SimulatorPath.Add("lon","get /position/longitude-deg\r\n");
+            this.SimulatorPath.Add("lat", "get /position/latitude-deg\r\n");
+            this.SimulatorPath.Add("rudder", "get /controls/flight/rudder\r\n");
+            this.SimulatorPath.Add("throttle", "get /controls/engines/current-engine/throttle\r\n");
 
         }
 
-        /*this function works from the auto view model this is an anather function because we need todo it on anather thread*/
+
+        
         public void setFromAuto(List<List<string>> s)
         {
             //the thread
@@ -123,11 +108,36 @@ namespace Ex3_web.Models
             this.server.Stop();
         }
 
-        //public float getInfo(string name)
-        //{
-        //    string command = this.SimulatorPath[name];
+        public float getInfo(string name)
+        {
+            string command = this.SimulatorPath[name];
+            byte[] byteTime = System.Text.Encoding.ASCII.GetBytes(command);
+            
+            this.ns.Write(byteTime, 0, byteTime.Length);
+            byte[] data = new byte[this.client.ReceiveBufferSize];
+            int byteRead = this.ns.Read(data, 0, Convert.ToInt32(this.client.ReceiveBufferSize));
+            string request = Encoding.ASCII.GetString(data, 0, byteRead);
+            request = request.Split('=')[1].Split(' ')[1].Split('\'')[1];
+            float ans = float.Parse(request);
+            return ans;
 
-        //}
+
+        }
+
+        public void WriteToFile(int second, int time, string name)
+        {
+            name = name + ".txt";
+            StreamWriter createText = File.CreateText(AppDomain.CurrentDomain.BaseDirectory + @"\" + name);
+           
+
+
+
+            StreamWriter KeepWrite = File.AppendText(AppDomain.CurrentDomain.BaseDirectory + @"\" + name)
+            
+
+        }
+
+
 
 
     }
