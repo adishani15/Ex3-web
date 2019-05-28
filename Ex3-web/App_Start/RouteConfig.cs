@@ -15,14 +15,12 @@ namespace Ex3_web
 
             routes.MapRoute(
                 name: "Display",
-                url: "{action}/{ip}/{port}",
+                url: "Display/{ip}/{port}",
                 // delete ip and port
                 defaults: new
                 {
                     controller = "Home",
                     action = "Display",
-                    ip = UrlParameter.Optional,
-                    port = UrlParameter.Optional
                 }
             );
 
@@ -38,7 +36,7 @@ namespace Ex3_web
 
             routes.MapRoute(
                 name: "save",
-                url: "{action}/{ip}/{port}/{second}/{time}/{name}",
+                url: "Save/{ip}/{port}/{second}/{time}/{name}",
                 defaults: new
                 {
                     controller = "Home",
@@ -50,6 +48,12 @@ namespace Ex3_web
                     time = UrlParameter.Optional,
                     name = UrlParameter.Optional
                 }
+            );
+
+            routes.MapRoute(
+                name: "Default",
+                url: "{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
 
         }

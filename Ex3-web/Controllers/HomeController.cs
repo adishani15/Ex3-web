@@ -12,7 +12,6 @@ namespace Ex3_web.Controllers
 {
     public class HomeController : Controller
     {
-        List<List<float>> myPoints= new List<List<float>>();
         // GET: Home
         public ActionResult Index()
         {
