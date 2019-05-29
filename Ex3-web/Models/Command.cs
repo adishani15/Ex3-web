@@ -22,12 +22,16 @@ namespace Ex3_web.Models
         private bool didConnect;
         StreamWriter createText;
         string name;
+        List<List<float>> myList;
+        int myLine;
 
         /*the constractor will set the map of all the path we need to know to connect with the flight simolator*/
         public Command()
         {
             this.SetTheMap();
             didConnect = false;
+            this.myLine = 0;
+            
         }
         /*here we really do the connection to the server*/
         public void connectServer(string ip,int port)
@@ -40,6 +44,23 @@ namespace Ex3_web.Models
             this.ns = client.GetStream();
             this.didConnect = true;
 
+        }
+
+        public List<float> Line
+        {
+            get {
+                if (myLine < myList.Count)
+                {
+                    int i = this.myLine;
+                    this.myLine++;
+                    return this.myList[i];
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
         }
 
 
@@ -163,6 +184,32 @@ namespace Ex3_web.Models
                
             }
 
+        }
+
+        public void ReadAll(string name)
+        
+        {
+            this.myLine = 0;
+            name = name + ".txt";
+            string[] lines = System.IO.File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory + @"\" + name);
+            List<List<float>> temp= new List<List<float>>();
+            for (int i = 0; i < lines.Length; i++)
+            {
+                
+
+                temp.Add(SpiltTheText(lines[i]));
+            }
+            this.myList = temp;
+        }
+
+        private List<float> SpiltTheText(string line)
+        {
+            List<float> list = new List<float>();
+            String[] data = line.Split(' ');
+            list.Add(float.Parse(data[0]));
+            list.Add(float.Parse(data[1]));
+
+            return list;
         }
 
          

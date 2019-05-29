@@ -21,13 +21,19 @@ namespace Ex3_web.Controllers
         [HttpGet]
         public ActionResult Display(string ip, int port)
         {
-            SingeltonCommand.Instance.connectServer(ip, port);
-
-
-            ViewBag.lon = SingeltonCommand.Instance.getInfo("lon") + 180;
-            ViewBag.lat = SingeltonCommand.Instance.getInfo("lat") + 180;
-            SingeltonCommand.Instance.close();
-            return View();
+            string[] list = ip.Split('.');
+            if (list.Length != 4)
+            {
+                return RedirectToAction("DisplayFile", new { name = ip, time = port });
+            }
+            else
+            {
+                SingeltonCommand.Instance.connectServer(ip, port);
+                ViewBag.lon = SingeltonCommand.Instance.getInfo("lon") + 180;
+                ViewBag.lat = SingeltonCommand.Instance.getInfo("lat") + 180;
+                SingeltonCommand.Instance.close();
+                return View();
+            }
         }
 
         public ActionResult Save(string ip, int port, int second, int time, string name)
@@ -37,6 +43,14 @@ namespace Ex3_web.Controllers
             Session["time"] = time;
             Session["second"] = second;
             return View();
+        }
+
+        public ActionResult DisplayFile(string name,int time)
+        {
+            Session["time"] = time;
+            SingeltonCommand.Instance.ReadAll(name);
+            return View();
+           
         }
 
 
@@ -80,8 +94,15 @@ namespace Ex3_web.Controllers
             
         }
 
+        public string DataFromFile()
+        {
+            List<float> list = SingeltonCommand.Instance.Line;
+            return ToXml(list);
+        }
+
         private string ToXml(List<float> list)
         {
+            
             //Initiate XML stuff
             StringBuilder sb = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -90,7 +111,18 @@ namespace Ex3_web.Controllers
             writer.WriteStartDocument();
             writer.WriteStartElement("list");
 
+            if(list == null)
+            {
+                writer.WriteElementString("check","no");
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+                writer.Flush();
+                return sb.ToString();
+            }
+
             Random r = new Random();
+
+            writer.WriteElementString("check", "list");
 
             writer.WriteElementString("lon", (list[0]+r.Next(50)).ToString());
             writer.WriteElementString("lat", (list[1]+r.Next(50)).ToString());
