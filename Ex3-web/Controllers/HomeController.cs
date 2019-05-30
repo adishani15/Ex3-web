@@ -12,16 +12,19 @@ namespace Ex3_web.Controllers
 {
     public class HomeController : Controller
     {
+        // The defult screen
         // GET: Home
         public ActionResult Index()
         {
             return View();
         }
 
+        // Function 1- Show where is the airplane.
         [HttpGet]
         public ActionResult Display(string ip, int port)
         {
             string[] list = ip.Split('.');
+            // if here, need to go to function 3- save the airplane route
             if (list.Length != 4)
             {
                 return RedirectToAction("DisplayFile", new { name = ip, time = port });
@@ -29,31 +32,37 @@ namespace Ex3_web.Controllers
             else
             {
                 SingeltonCommand.Instance.connectServer(ip, port);
-                ViewBag.lon = SingeltonCommand.Instance.getInfo("lon") + 180;
-                ViewBag.lat = SingeltonCommand.Instance.getInfo("lat") + 180;
+                // get the information (lon,lat) from the simulator
+                ViewBag.lon = SingeltonCommand.Instance.getInfo("lon");
+                ViewBag.lat = SingeltonCommand.Instance.getInfo("lat");
+                // close the connection
                 SingeltonCommand.Instance.close();
                 return View();
             }
         }
 
+        // Function 3- save the airplane route in a file.
         public ActionResult Save(string ip, int port, int second, int time, string name)
         {
             SingeltonCommand.Instance.connectServer(ip, port);
             SingeltonCommand.Instance.OpenFile(name);
+            // save time and second in Session
             Session["time"] = time;
             Session["second"] = second;
             return View();
         }
 
-        public ActionResult DisplayFile(string name,int time)
+
+        public ActionResult DisplayFile(string name, int time)
         {
             Session["time"] = time;
+            // read file
             SingeltonCommand.Instance.ReadAll(name);
             return View();
-           
+
         }
 
-
+        // function 2- track the airplane
         [HttpGet]
         public ActionResult Display3Param(string ip, int port, int time)
         {
@@ -62,19 +71,18 @@ namespace Ex3_web.Controllers
             return View();
         }
 
-
+        // Save lon and lat in xml file.
         [HttpPost]
         public string Read()
         {
             List<float> point = new List<float>();
-            Random r = new Random();
-            var lon = SingeltonCommand.Instance.getInfo("lon") + r.Next(50);
-            var lat = SingeltonCommand.Instance.getInfo("lat") + r.Next(50);
-
+            // get the information (lon,lat) from the simulator
+            var lon = SingeltonCommand.Instance.getInfo("lon");
+            var lat = SingeltonCommand.Instance.getInfo("lat");
             StringBuilder sb = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();
             XmlWriter writer = XmlWriter.Create(sb, settings);
-
+            // write lon and lat to the xml file
             writer.WriteStartDocument();
             writer.WriteStartElement("Location");
             writer.WriteElementString("Lon", lon.ToString());
@@ -85,13 +93,13 @@ namespace Ex3_web.Controllers
             return sb.ToString();
         }
 
-    [HttpPost]
+        [HttpPost]
 
         public string GetAllParm()
         {
             List<float> list = SingeltonCommand.Instance.OnTimedEvent();
             return ToXml(list);
-            
+
         }
 
         public string DataFromFile()
@@ -102,8 +110,8 @@ namespace Ex3_web.Controllers
 
         private string ToXml(List<float> list)
         {
-            
-            //Initiate XML stuff
+
+            //Init XML stuff
             StringBuilder sb = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();
             XmlWriter writer = XmlWriter.Create(sb, settings);
@@ -111,9 +119,9 @@ namespace Ex3_web.Controllers
             writer.WriteStartDocument();
             writer.WriteStartElement("list");
 
-            if(list == null)
+            if (list == null)
             {
-                writer.WriteElementString("check","no");
+                writer.WriteElementString("check", "no");
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
                 writer.Flush();
@@ -124,8 +132,8 @@ namespace Ex3_web.Controllers
 
             writer.WriteElementString("check", "list");
 
-            writer.WriteElementString("lon", (list[0]+r.Next(50)).ToString());
-            writer.WriteElementString("lat", (list[1]+r.Next(50)).ToString());
+            writer.WriteElementString("lon", (list[0] + r.Next(50)).ToString());
+            writer.WriteElementString("lat", (list[1] + r.Next(50)).ToString());
             writer.WriteEndElement();
 
             writer.WriteEndDocument();

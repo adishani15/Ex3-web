@@ -24,7 +24,6 @@
                 $xml = $(xmlDoc),
                 lon = parseFloat($xml.find("Lon").text());
                 lat = parseFloat($xml.find("Lat").text());
-
                 var canvas = document.getElementById("canvas");
                 var con = canvas.getContext("2d");
                 con.canvas.width = window.innerWidth;
