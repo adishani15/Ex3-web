@@ -23,14 +23,20 @@ namespace Ex3_web.Controllers
         [HttpGet]
         public ActionResult Display(string ip, int port)
         {
-            string[] list = ip.Split('.');
+            System.Net.IPAddress ipAddress = null;
+            bool isValidIp = System.Net.IPAddress.TryParse(ip, out ipAddress);
             // if here, need to go to function 3- save the airplane route
-            if (list.Length != 4)
+            if (!isValidIp)
             {
                 return RedirectToAction("DisplayFile", new { name = ip, time = port });
             }
             else
             {
+                if (SingeltonCommand.Instance.GetDidConnect())
+                {
+                    SingeltonCommand.Instance.close();
+                }
+
                 SingeltonCommand.Instance.connectServer(ip, port);
                 // get the information (lon,lat) from the simulator
                 ViewBag.lon = SingeltonCommand.Instance.getInfo("lon");
@@ -44,6 +50,11 @@ namespace Ex3_web.Controllers
         // Function 3- save the airplane route in a file.
         public ActionResult Save(string ip, int port, int second, int time, string name)
         {
+
+            if (SingeltonCommand.Instance.GetDidConnect())
+            {
+                SingeltonCommand.Instance.close();
+            }
             SingeltonCommand.Instance.connectServer(ip, port);
             SingeltonCommand.Instance.OpenFile(name);
             // save time and second in Session
@@ -67,6 +78,10 @@ namespace Ex3_web.Controllers
         public ActionResult Display3Param(string ip, int port, int time)
         {
             Session["time"] = time;
+            if (SingeltonCommand.Instance.GetDidConnect())
+            {
+                SingeltonCommand.Instance.close();
+            }
             SingeltonCommand.Instance.connectServer(ip, port);
             return View();
         }

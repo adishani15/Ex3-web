@@ -154,6 +154,7 @@ namespace Ex3_web.Models
             this.createText = File.CreateText(AppDomain.CurrentDomain.BaseDirectory + @"\" + this.name);
             //StreamWriter KeepWrite = File.AppendText(AppDomain.CurrentDomain.BaseDirectory + @"\" + name);
             this.createText.Close();
+            this.didConnect = false;
         }
 
         public List<float> OnTimedEvent()
